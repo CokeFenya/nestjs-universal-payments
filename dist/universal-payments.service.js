@@ -12,20 +12,20 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UniversalPaymentsService = void 0;
+exports.UniversalPayService = void 0;
 const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const rxjs_1 = require("rxjs");
 const uuid_1 = require("uuid");
-const unitpay_interface_1 = require("./interfaces/unitpay.interface");
-const universal_payments_constants_1 = require("./universal-payments.constants");
-let UniversalPaymentsService = class UniversalPaymentsService {
+const interfaces_1 = require("./interfaces");
+const yookassa_constants_1 = require("./yookassa.constants");
+let UniversalPayService = class UniversalPayService {
     constructor(options, httpService) {
         this.options = options;
         this.httpService = httpService;
-        this.shopId = options.projectId;
-        this.apiKey = options.secretKey;
-        this.apiUrl = universal_payments_constants_1.DEFAULT_URL;
+        this.shopId = options.shopId;
+        this.apiKey = options.apiKey;
+        this.apiUrl = yookassa_constants_1.DEFAULT_URL;
     }
     /**
      * Создает платеж через YooKassa.
@@ -55,36 +55,21 @@ let UniversalPaymentsService = class UniversalPaymentsService {
      * const paymentResponse = await this.yookassaService.createPayment(paymentData);
      * console.log(paymentResponse);
      * ```
-     */ async createPayment(paymentData) {
-        var _a, _b;
+     */
+    async createPayment(paymentData) {
         const idempotenceKey = (0, uuid_1.v4)();
-        // Формируем URL с параметрами params[...]
-        const params = new URLSearchParams();
-        params.append('method', 'initPayment');
-        params.append('params[paymentType]', paymentData.paymentType);
-        params.append('params[account]', paymentData.account);
-        params.append('params[sum]', paymentData.sum.toFixed(2));
-        if (paymentData.desc)
-            params.append('params[desc]', paymentData.desc);
-        params.append('params[projectId]', paymentData.projectId.toString());
-        params.append('params[secretKey]', paymentData.secretKey);
-        if (paymentData.customerEmail)
-            params.append('params[customerEmail]', paymentData.customerEmail);
-        if (paymentData.currency)
-            params.append('params[currency]', paymentData.currency);
-        if (paymentData.locale)
-            params.append('params[locale]', paymentData.locale);
-        const url = `${this.apiUrl}?${params.toString()}`;
         try {
-            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.get(url, {
+            const response = await (0, rxjs_1.firstValueFrom)(this.httpService.post(`${this.apiUrl}payments`, paymentData, {
                 headers: {
+                    Authorization: `Basic ${Buffer.from(`${this.shopId}:${this.apiKey}`).toString('base64')}`,
+                    'Content-Type': 'application/json',
                     'Idempotence-Key': idempotenceKey
                 }
             }));
             return response.data;
         }
         catch (error) {
-            throw new common_1.HttpException(((_b = (_a = error.response) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.description) ||
+            throw new common_1.HttpException(error.response.data.description ||
                 'Ошибка при выполнении запроса', common_1.HttpStatus.BAD_REQUEST);
         }
     }
@@ -323,9 +308,9 @@ let UniversalPaymentsService = class UniversalPaymentsService {
         }
     }
 };
-exports.UniversalPaymentsService = UniversalPaymentsService;
-exports.UniversalPaymentsService = UniversalPaymentsService = __decorate([
+exports.UniversalPayService = UniversalPayService;
+exports.UniversalPayService = UniversalPayService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_1.Inject)(unitpay_interface_1.UnitPayOptionsSymbol)),
+    __param(0, (0, common_1.Inject)(interfaces_1.YookassaOptionsSymbol)),
     __metadata("design:paramtypes", [Object, axios_1.HttpService])
-], UniversalPaymentsService);
+], UniversalPayService);

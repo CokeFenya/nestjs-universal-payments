@@ -1,21 +1,21 @@
 import { type DynamicModule } from '@nestjs/common';
-import { UnitPayAsyncOptions, UnitPayOptions } from './interfaces';
-export declare class UniversalPaymentsModule {
+import { type YookassaAsyncOptions, type YookassaOptions } from './interfaces/yookassa-options.interface';
+export declare class UniversalPayModule {
     /**
      * Метод для регистрации модуля с синхронными параметрами.
      * Этот метод используется для конфигурации модуля с заранее заданными параметрами.
-     * @param {UniversalPaymentsOptions} options - Настройки для конфигурации.
+     * @param {YookassaOptions} options - Настройки для конфигурации YooKassa.
      * @returns {DynamicModule} Возвращает динамический модуль с необходимыми провайдерами и импортами.
      *
      * @example
      * ```ts
-     * UniversalPaymentsModule.forRoot({
+     * YookassaModule.forRoot({
      *   shopId: 'your_shop_id',
      *   apiKey: 'your_api_key',
      * });
      * ```
      */
-    static forRoot(options: UnitPayOptions): DynamicModule;
+    static forRoot(options: YookassaOptions): DynamicModule;
     /**
      * Метод для регистрации модуля с асинхронной конфигурацией.
      * Этот метод используется для конфигурации модуля с параметрами, которые будут переданы через фабричную функцию.
@@ -24,7 +24,7 @@ export declare class UniversalPaymentsModule {
      *
      * @example
      * ```ts
-     * UniversalPaymentsModule.forRootAsync({
+     * YookassaModule.forRootAsync({
      *   imports: [ConfigModule],
      *	  useFactory: async (configService: ConfigService) => ({
      *		 shopId: configService.getOrThrow('YOOKASSA_SHOP_ID'),
@@ -34,5 +34,5 @@ export declare class UniversalPaymentsModule {
      * });
      * ```
      */
-    static forRootAsync(options: UnitPayAsyncOptions): DynamicModule;
+    static forRootAsync(options: YookassaAsyncOptions): DynamicModule;
 }

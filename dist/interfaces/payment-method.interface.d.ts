@@ -1,9 +1,8 @@
 import type { Amount } from './common.interface';
+/**
+ * Тип для метода оплаты, который может быть одним из нескольких типов.
+ */
 export type PaymentMethod = PaymentMethodAlfabank | PaymentMethodMobileBalance | PaymentMethodCard | PaymentMethodInstallments | PaymentMethodCash | PaymentMethodSbp | PaymentMethodB2b_sberbank | PaymentMethodTinkoff_bank | PaymentMethodYooMoney | PaymentMethodQiwi | PaymentMethodSberbank;
-export declare enum MethodProvider {
-    yoo_kassa = "yookassa",
-    unitpay = "unitpay"
-}
 /**
  * Перечисление возможных методов оплаты.
  * Каждый метод оплаты представлен уникальным типом.

@@ -1,15 +1,14 @@
 import { HttpService } from '@nestjs/axios';
-import { type PaymentCreateRequest, type PaymentDetails } from './interfaces';
+import { type PaymentCreateRequest, type PaymentDetails, type YookassaOptions } from './interfaces';
 import { RefundDetails } from './interfaces/refund-details.interface';
 import { RefundCreateRequest } from './interfaces/refund-request.interface';
-import { UnitPayOptions } from './interfaces/unitpay.interface';
-export declare class UniversalPaymentsService {
+export declare class UniversalPayService {
     private readonly options;
     private readonly httpService;
     private readonly shopId;
     private readonly apiKey;
     private readonly apiUrl;
-    constructor(options: UnitPayOptions, httpService: HttpService);
+    constructor(options: YookassaOptions, httpService: HttpService);
     /**
      * Создает платеж через YooKassa.
      * Этот метод отправляет запрос на создание нового платежа с данными из `paymentData`.
@@ -38,18 +37,8 @@ export declare class UniversalPaymentsService {
      * const paymentResponse = await this.yookassaService.createPayment(paymentData);
      * console.log(paymentResponse);
      * ```
-     */ createPayment(paymentData: PaymentCreateRequest & {
-        projectId: number;
-        secretKey: string;
-        paymentType: string;
-        account: string;
-        desc?: string;
-        sum: number;
-        currency?: string;
-        locale?: string;
-        customerEmail?: string;
-        cashItems?: string;
-    }): Promise<PaymentDetails>;
+     */
+    createPayment(paymentData: PaymentCreateRequest): Promise<PaymentDetails>;
     /**
      * Получает список платежей.
      * Этот метод используется для получения списка всех платежей с возможностью пагинации.

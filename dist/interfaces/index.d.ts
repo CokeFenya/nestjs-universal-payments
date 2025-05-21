@@ -1,5 +1,5 @@
 export * from './common.interface';
-export * from './unitpay.interface';
+export * from './yookassa-options.interface';
 export * from './confirmation.interface';
 export * from './payment-details.interface';
 export * from './payment-method.interface';

@@ -1,11 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PaymentMethodsEnum = exports.MethodProvider = void 0;
-var MethodProvider;
-(function (MethodProvider) {
-    MethodProvider["yoo_kassa"] = "yookassa";
-    MethodProvider["unitpay"] = "unitpay";
-})(MethodProvider || (exports.MethodProvider = MethodProvider = {}));
+exports.PaymentMethodsEnum = void 0;
 /**
  * Перечисление возможных методов оплаты.
  * Каждый метод оплаты представлен уникальным типом.

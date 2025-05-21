@@ -15,7 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./common.interface"), exports);
-__exportStar(require("./unitpay.interface"), exports);
+__exportStar(require("./yookassa-options.interface"), exports);
 // export * from './receipt-details.interface'
 // export * from './receipt-request.interface'
 __exportStar(require("./confirmation.interface"), exports);

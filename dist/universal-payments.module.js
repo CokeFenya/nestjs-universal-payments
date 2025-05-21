@@ -5,23 +5,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var UniversalPaymentsModule_1;
+var UniversalPayModule_1;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UniversalPaymentsModule = void 0;
+exports.UniversalPayModule = void 0;
 const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
-const interfaces_1 = require("./interfaces");
+const yookassa_options_interface_1 = require("./interfaces/yookassa-options.interface");
 const universal_payments_service_1 = require("./universal-payments.service");
-let UniversalPaymentsModule = UniversalPaymentsModule_1 = class UniversalPaymentsModule {
+let UniversalPayModule = UniversalPayModule_1 = class UniversalPayModule {
     /**
      * Метод для регистрации модуля с синхронными параметрами.
      * Этот метод используется для конфигурации модуля с заранее заданными параметрами.
-     * @param {UniversalPaymentsOptions} options - Настройки для конфигурации.
+     * @param {YookassaOptions} options - Настройки для конфигурации YooKassa.
      * @returns {DynamicModule} Возвращает динамический модуль с необходимыми провайдерами и импортами.
      *
      * @example
      * ```ts
-     * UniversalPaymentsModule.forRoot({
+     * YookassaModule.forRoot({
      *   shopId: 'your_shop_id',
      *   apiKey: 'your_api_key',
      * });
@@ -29,16 +29,16 @@ let UniversalPaymentsModule = UniversalPaymentsModule_1 = class UniversalPayment
      */
     static forRoot(options) {
         return {
-            module: UniversalPaymentsModule_1,
+            module: UniversalPayModule_1,
             imports: [axios_1.HttpModule],
             providers: [
                 {
-                    provide: interfaces_1.UnitPayOptionsSymbol,
+                    provide: yookassa_options_interface_1.YookassaOptionsSymbol,
                     useValue: options
                 },
-                universal_payments_service_1.UniversalPaymentsService
+                universal_payments_service_1.UniversalPayService
             ],
-            exports: [universal_payments_service_1.UniversalPaymentsService],
+            exports: [universal_payments_service_1.UniversalPayService],
             global: true
         };
     }
@@ -50,7 +50,7 @@ let UniversalPaymentsModule = UniversalPaymentsModule_1 = class UniversalPayment
      *
      * @example
      * ```ts
-     * UniversalPaymentsModule.forRootAsync({
+     * YookassaModule.forRootAsync({
      *   imports: [ConfigModule],
      *	  useFactory: async (configService: ConfigService) => ({
      *		 shopId: configService.getOrThrow('YOOKASSA_SHOP_ID'),
@@ -62,23 +62,23 @@ let UniversalPaymentsModule = UniversalPaymentsModule_1 = class UniversalPayment
      */
     static forRootAsync(options) {
         return {
-            module: UniversalPaymentsModule_1,
+            module: UniversalPayModule_1,
             imports: [axios_1.HttpModule, ...(options.imports || [])],
             providers: [
                 {
-                    provide: interfaces_1.UnitPayOptionsSymbol,
+                    provide: yookassa_options_interface_1.YookassaOptionsSymbol,
                     useFactory: options.useFactory,
                     inject: options.inject || []
                 },
-                universal_payments_service_1.UniversalPaymentsService
+                universal_payments_service_1.UniversalPayService
             ],
-            exports: [universal_payments_service_1.UniversalPaymentsService],
+            exports: [universal_payments_service_1.UniversalPayService],
             global: true
         };
     }
 };
-exports.UniversalPaymentsModule = UniversalPaymentsModule;
-exports.UniversalPaymentsModule = UniversalPaymentsModule = UniversalPaymentsModule_1 = __decorate([
+exports.UniversalPayModule = UniversalPayModule;
+exports.UniversalPayModule = UniversalPayModule = UniversalPayModule_1 = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({})
-], UniversalPaymentsModule);
+], UniversalPayModule);
