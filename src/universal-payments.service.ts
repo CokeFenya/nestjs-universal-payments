@@ -3,31 +3,29 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { v4 as uuidv4 } from 'uuid'
 import {
+	YookassaOptionsSymbol,
 	type Amount,
 	type PaymentCreateRequest,
-	type PaymentDetails
+	type PaymentDetails,
+	type YookassaOptions
 } from './interfaces'
 import { RefundDetails } from './interfaces/refund-details.interface'
 import { RefundCreateRequest } from './interfaces/refund-request.interface'
-import {
-	UnitPayOptions,
-	UnitPayOptionsSymbol
-} from './interfaces/unitpay.interface'
-import { DEFAULT_URL } from './universal-payments.constants'
+import { DEFAULT_URL } from './yookassa.constants'
 
 @Injectable()
-export class UniversalPaymentsService {
+export class UniversalPayService {
 	private readonly shopId: string
 	private readonly apiKey: string
 	private readonly apiUrl: string
 
 	public constructor(
-		@Inject(UnitPayOptionsSymbol)
-		private readonly options: UnitPayOptions,
+		@Inject(YookassaOptionsSymbol)
+		private readonly options: YookassaOptions,
 		private readonly httpService: HttpService
 	) {
-		this.shopId = options.projectId
-		this.apiKey = options.secretKey
+		this.shopId = options.shopId
+		this.apiKey = options.apiKey
 		this.apiUrl = DEFAULT_URL
 	}
 
@@ -59,53 +57,32 @@ export class UniversalPaymentsService {
 	 * const paymentResponse = await this.yookassaService.createPayment(paymentData);
 	 * console.log(paymentResponse);
 	 * ```
-	 */ public async createPayment(
-		paymentData: PaymentCreateRequest & {
-			projectId: number
-			secretKey: string
-			paymentType: string
-			account: string
-			desc?: string
-			sum: number
-			currency?: string
-			locale?: string
-			customerEmail?: string
-			cashItems?: string
-		}
+	 */
+	public async createPayment(
+		paymentData: PaymentCreateRequest
 	): Promise<PaymentDetails> {
 		const idempotenceKey = uuidv4()
 
-		// Формируем URL с параметрами params[...]
-		const params = new URLSearchParams()
-
-		params.append('method', 'initPayment')
-		params.append('params[paymentType]', paymentData.paymentType)
-		params.append('params[account]', paymentData.account)
-		params.append('params[sum]', paymentData.sum.toFixed(2))
-		if (paymentData.desc) params.append('params[desc]', paymentData.desc)
-		params.append('params[projectId]', paymentData.projectId.toString())
-		params.append('params[secretKey]', paymentData.secretKey)
-		if (paymentData.customerEmail)
-			params.append('params[customerEmail]', paymentData.customerEmail)
-		if (paymentData.currency)
-			params.append('params[currency]', paymentData.currency)
-		if (paymentData.locale)
-			params.append('params[locale]', paymentData.locale)
-
-		const url = `${this.apiUrl}?${params.toString()}`
-
 		try {
 			const response = await firstValueFrom(
-				this.httpService.get<PaymentDetails>(url, {
-					headers: {
-						'Idempotence-Key': idempotenceKey
+				this.httpService.post<PaymentDetails>(
+					`${this.apiUrl}payments`,
+					paymentData,
+					{
+						headers: {
+							Authorization: `Basic ${Buffer.from(
+								`${this.shopId}:${this.apiKey}`
+							).toString('base64')}`,
+							'Content-Type': 'application/json',
+							'Idempotence-Key': idempotenceKey
+						}
 					}
-				})
+				)
 			)
 			return response.data
 		} catch (error) {
 			throw new HttpException(
-				error.response?.data?.description ||
+				error.response.data.description ||
 					'Ошибка при выполнении запроса',
 				HttpStatus.BAD_REQUEST
 			)

@@ -1,41 +1,41 @@
 import { HttpModule } from '@nestjs/axios'
 import { type DynamicModule, Global, Module } from '@nestjs/common'
 import {
-	UnitPayAsyncOptions,
-	UnitPayOptions,
-	UnitPayOptionsSymbol
-} from './interfaces'
-import { UniversalPaymentsService } from './universal-payments.service'
+	type YookassaAsyncOptions,
+	type YookassaOptions,
+	YookassaOptionsSymbol
+} from './interfaces/yookassa-options.interface'
+import { UniversalPayService } from './universal-payments.service'
 
 @Global()
 @Module({})
-export class UniversalPaymentsModule {
+export class UniversalPayModule {
 	/**
 	 * Метод для регистрации модуля с синхронными параметрами.
 	 * Этот метод используется для конфигурации модуля с заранее заданными параметрами.
-	 * @param {UniversalPaymentsOptions} options - Настройки для конфигурации.
+	 * @param {YookassaOptions} options - Настройки для конфигурации YooKassa.
 	 * @returns {DynamicModule} Возвращает динамический модуль с необходимыми провайдерами и импортами.
 	 *
 	 * @example
 	 * ```ts
-	 * UniversalPaymentsModule.forRoot({
+	 * YookassaModule.forRoot({
 	 *   shopId: 'your_shop_id',
 	 *   apiKey: 'your_api_key',
 	 * });
 	 * ```
 	 */
-	public static forRoot(options: UnitPayOptions): DynamicModule {
+	public static forRoot(options: YookassaOptions): DynamicModule {
 		return {
-			module: UniversalPaymentsModule,
+			module: UniversalPayModule,
 			imports: [HttpModule],
 			providers: [
 				{
-					provide: UnitPayOptionsSymbol,
+					provide: YookassaOptionsSymbol,
 					useValue: options
 				},
-				UniversalPaymentsService
+				UniversalPayService
 			],
-			exports: [UniversalPaymentsService],
+			exports: [UniversalPayService],
 			global: true
 		}
 	}
@@ -48,7 +48,7 @@ export class UniversalPaymentsModule {
 	 *
 	 * @example
 	 * ```ts
-	 * UniversalPaymentsModule.forRootAsync({
+	 * YookassaModule.forRootAsync({
 	 *   imports: [ConfigModule],
 	 *	  useFactory: async (configService: ConfigService) => ({
 	 *		 shopId: configService.getOrThrow('YOOKASSA_SHOP_ID'),
@@ -58,19 +58,19 @@ export class UniversalPaymentsModule {
 	 * });
 	 * ```
 	 */
-	public static forRootAsync(options: UnitPayAsyncOptions): DynamicModule {
+	public static forRootAsync(options: YookassaAsyncOptions): DynamicModule {
 		return {
-			module: UniversalPaymentsModule,
+			module: UniversalPayModule,
 			imports: [HttpModule, ...(options.imports || [])],
 			providers: [
 				{
-					provide: UnitPayOptionsSymbol,
+					provide: YookassaOptionsSymbol,
 					useFactory: options.useFactory,
 					inject: options.inject || []
 				},
-				UniversalPaymentsService
+				UniversalPayService
 			],
-			exports: [UniversalPaymentsService],
+			exports: [UniversalPayService],
 			global: true
 		}
 	}

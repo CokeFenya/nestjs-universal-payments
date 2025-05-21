@@ -41,7 +41,7 @@ export interface PaymentCreateRequest {
 	 * Метод платежа.
 	 * Необязательное поле.
 	 */
-	paymentType?: PaymentMethod
+	payment_method_data?: PaymentMethod
 
 	/**
 	 * Указывает, следует ли сразу захватывать платеж.

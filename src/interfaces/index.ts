@@ -1,5 +1,6 @@
 export * from './common.interface'
-export * from './unitpay.interface'
+export * from './yookassa-options.interface'
+
 // export * from './receipt-details.interface'
 // export * from './receipt-request.interface'
 
